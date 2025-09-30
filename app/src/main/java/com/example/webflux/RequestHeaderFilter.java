@@ -1,20 +1,20 @@
 package com.example.webflux;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.server.HandlerFilterFunction;
-import org.springframework.web.reactive.function.server.HandlerFunction;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.publisher.Mono;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
-public class RequestHeaderFilter implements HandlerFilterFunction<ServerResponse, ServerResponse> {
+public class RequestHeaderFilter extends OncePerRequestFilter {
 
     @Override
-    public Mono<ServerResponse> filter(ServerRequest request, HandlerFunction<ServerResponse> next) {
-        ServerRequest mutatedRequest = ServerRequest.from(request)
-                .header("X-Filtered", "true")
-                .build();
-        return next.handle(mutatedRequest);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        response.addHeader("X-Filtered", "true");
+        filterChain.doFilter(request, response);
     }
 }
