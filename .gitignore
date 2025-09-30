@@ -3,3 +3,6 @@
 
 # Ignore Gradle build output directory
 build
+
+# Ignore IDE/compiled binaries under app/bin
+app/bin
